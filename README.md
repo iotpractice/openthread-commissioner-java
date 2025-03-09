@@ -19,7 +19,7 @@ Follow the below steps to build Native Commissioner
     ```bash 
     ➜  $ echo export "JAVA_HOME=\$(/usr/libexec/java_home)" >> ~/.zshrc
     ➜  $ echo $JAVA_HOME
-    /Users/thw8316/Library/Java/JavaVirtualMachines/openjdk-23.0.1/Contents/Home  
+    /Users/ksingh/Library/Java/JavaVirtualMachines/openjdk-23.0.1/Contents/Home  
     ➜  $  
     ```
 
