@@ -1,5 +1,16 @@
 # Thread Commissioner Implementation in Java
 
+This project refers android commissioner implementation from [OpenThread](https://github.com/openthread/ot-commissioner/tree/main/android). Replicate similar behaviour 
+in plain java application. It builds the native java library from [OpenThread Commissioner Repository](https://github.com/openthread/ot-commissioner) and uses it in Java Application.
+
+# Pre-Built Libraries
+Here are few pre-built libraries  
+1. [libotcommissioner.jar](pre-built/libotcommissioner.jar) - Cross Platform Java JNI Wrapper
+2. [libcommissioner-java-mac-amd_64.jnilib](pre-built/libcommissioner-java-mac-amd_64.jnilib) - For Mac OS with Apple Chips.   
+2. [libcommissioner-java-mac-x86_64.jnilib](pre-built/libcommissioner-java-mac-x86_64.jnilib) - For Mac OS with Intel Chips
+
+Rename the respective library to `libcommissioner-java.jnilib` and place it in the same directory as your java application. Embed `libotcommissioner.jar` in your application jar. 
+
 ## Build Native Commissioner
 Follow the below steps to build Native Commissioner
 
