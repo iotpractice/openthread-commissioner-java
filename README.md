@@ -25,8 +25,10 @@ The following are the pre-built libraries for the Java Commissioner if one don't
 - **[libotcommissioner.jar](pre-built/libotcommissioner.jar)** – Cross-platform Java JNI wrapper 
 - **[libcommissioner-java-mac-amd_64.jnilib](pre-built/libcommissioner-java-mac-amd_64.jnilib)** – For macOS with Apple Silicon
 - **[libcommissioner-java-mac-x86_64.jnilib](pre-built/libcommissioner-java-mac-x86_64.jnilib)** – For macOS with Intel chips
+- **[libcommissioner-java-ubuntu-x86_64.so](pre-built/libcommissioner-java-ubuntu-x86_64.so)** – For Ubuntu Linux x86_64
 - **[openthread-commissioner-java-1.0-SNAPSHOT-jar-with-dependencies.jar](pre-built/openthread-commissioner-java-1.0-SNAPSHOT-jar-with-dependencies.jar)** - This project's delivery jar with cross-platform dependencies
-Rename the respective library to `libcommissioner-java.jnilib` and place it in the same directory as your java application. Embed `libotcommissioner.jar` in your application jar, above jar `openthread-commissioner-java-1.0-SNAPSHOT-jar-with-dependencies.jar` already package it..
+
+Rename the respective library to `libcommissioner-java.jnilib or libcommissioner-java.so` and place it in the same directory as your java application. Embed `libotcommissioner.jar` in your application jar, above jar `openthread-commissioner-java-1.0-SNAPSHOT-jar-with-dependencies.jar` already package it..
 
 ---
 
@@ -34,14 +36,10 @@ Rename the respective library to `libcommissioner-java.jnilib` and place it in t
 It is recommended to build your native Commissioner libraries to ensure compatibility with your platform. Follow the steps below to build the native Commissioner: 
 ### Prerequisites
 Ensure that the `JAVA_HOME` environment variable is set correctly to allow JNI to locate Java.
-```sh
-echo export "JAVA_HOME=\$(/usr/libexec/java_home)" >> ~/.zshrc
-source ~/.zshrc
-echo $JAVA_HOME
-```
 
 Example output:
 ```
+echo $JAVA_HOME
 /Users/ksingh/Library/Java/JavaVirtualMachines/openjdk-23.0.1/Contents/Home
 ```
 ### Build Process
@@ -77,11 +75,11 @@ target/openthread-commissioner-java-1.0-SNAPSHOT-jar-with-dependencies.jar
 
 ### Run
 
-Navigate to the `target/` directory and execute the Commissioner:
+Navigate to the `target/` directory and execute the Commissioner with `-Djava.library.path=.` in current directory:
 
 ```sh
 cd target  
-java -jar openthread-commissioner-java-1.0-SNAPSHOT-jar-with-dependencies.jar  
+java -Djava.library.path=. -jar openthread-commissioner-java-1.0-SNAPSHOT-jar-with-dependencies.jar  
 ```
 
 Expected output:
@@ -150,3 +148,4 @@ We welcome contributions from the community to improve and expand this project. 
 - [Understanding Commissioner and Joiner](https://medium.com/iotpractices/simplifying-thread-network-provisioning-with-joiner-and-commissioner-roles-60c624f0de85)
 - [Understanding External Commissioning - Commissioner CLI](https://medium.com/iotpractices/external-commissioning-in-thread-network-b06e7b8a64ab)
 - [Understanding External Commissioning - Android App](https://medium.com/iotpractices/building-and-using-openthread-commissioner-mobile-app-03bde78773ab)
+- [Understanding External Commissioning - Java Application](https://medium.com/iotpractices/openthread-commissioner-implementation-in-java-c63c689a2af6)
