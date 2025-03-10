@@ -19,7 +19,7 @@ cd ot-commissioner
 
 ## create a hidden build folder.
 readonly BUILD_DIR=".build"
-
+ 
 mkdir -p "$BUILD_DIR" && cd "$BUILD_DIR"
 cmake -DCMAKE_INSTALL_PREFIX=/usr/local -GNinja \
     -DBUILD_SHARED_LIBS=OFF \
@@ -27,6 +27,9 @@ cmake -DCMAKE_INSTALL_PREFIX=/usr/local -GNinja \
     -DCMAKE_CXX_STANDARD_REQUIRED=ON \
     -DCMAKE_BUILD_TYPE=Release \
     -DOT_COMM_JAVA_BINDING=ON \
+    -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+    -DJAVA_AWT_INCLUDE_PATH=NotNeeded \
+    -DJAVA_AWT_LIBRARY=NotNeeded \
     ../
 
 ninja commissioner-java
