@@ -13,7 +13,7 @@ import java.util.concurrent.CompletionException;
  */
 public class Runner {
     private static final Logger logger = LoggerFactory.getLogger(Runner.class);
-    private static final int TIMEOUT = 20;
+    private static final int TIMEOUT = 60;
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -29,37 +29,38 @@ public class Runner {
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
-            } while (counter <= TIMEOUT && otbrDiscoverer.getOTBRInfo() == null);
+            } while (counter < TIMEOUT && otbrDiscoverer.getOTBRInfo() == null);
 
             OTBRInfo otbrInfo = otbrDiscoverer.getOTBRInfo();
             if (otbrInfo == null) {
+                otbrDiscoverer.close();
                 logger.info("Unable to Discover Border Router Let's manually resolve it");
-                System.out.print(">>> Enter Border Agent Address: ");
+                System.out.println(">>> Enter Border Agent Address: ");
                 String borderAgentAddress = scanner.nextLine();
 
-                System.out.print(">>> Enter Border Agent Port: ");
+                System.out.println(">>> Enter Border Agent Port: ");
                 int borderAgentPort = Integer.parseInt(scanner.nextLine());
 
                 otbrInfo = new OTBRInfo(borderAgentAddress, borderAgentPort);
             }
 
-            System.out.print(">>> Enter PSKc (enter blank if want to compute):");
+            System.out.println(">>> Enter PSKc (enter blank if want to compute):");
             String pskcStr = scanner.nextLine();
             byte[] pskc;
             if (pskcStr.isEmpty()) {
                 if (otbrInfo.getNetworkName() == null) {
-                    System.out.print(">>> Enter Network Name:");
+                    System.out.println(">>> Enter Network Name:");
                     String networkName = scanner.nextLine();
                     otbrInfo.setNetworkName(networkName);
                 }
 
                 if (otbrInfo.getExtendedPanId() == null) {
-                    System.out.print(">>> Enter EXT Pan ID:");
+                    System.out.println(">>> Enter EXT Pan ID:");
                     String extPanId = scanner.nextLine();
                     otbrInfo.setExtendedPanId(extPanId);
                 }
 
-                System.out.print(">>>  Enter Commissioner Passphrase:");
+                System.out.println(">>>  Enter Commissioner Passphrase:");
                 String passphrase = scanner.nextLine();
                 pskc = commissioner.computePskc(passphrase, otbrInfo.getNetworkName(), new ByteArray(Utils.getByteArray(otbrInfo.getExtendedPanId())));
             } else {
@@ -85,7 +86,7 @@ public class Runner {
             System.out.println("1. Check State");
             System.out.println("2. Enable All Joiners");
             System.out.println("3. Exit");
-            System.out.print("Enter command number: ");
+            System.out.println("Enter command number: ");
             int command = 0;
             try {
                 command = Integer.parseInt(scanner.nextLine());
@@ -116,7 +117,7 @@ public class Runner {
                     break;
                 case 2:
                     try {
-                        System.out.print("Enter PSKd For All Joiner:");
+                        System.out.println("Enter PSKd For All Joiner:");
                         String pskd = scanner.nextLine();
                         if (!pskd.isEmpty()) {
                             commissioner.enableAllJoiners(pskd)

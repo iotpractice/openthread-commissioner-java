@@ -54,11 +54,7 @@ public class OTBRDiscoverer implements ServiceListener {
         } catch (Exception e) {
             logger.error("Failed to resolve service: {}", e.getMessage());
         } finally {
-            try {
-                jmdns.close();
-            } catch (IOException e) {
-                logger.error("Failed to close JNS service: {}", e.getMessage());
-            }
+           close();
         }
     }
 
@@ -69,6 +65,16 @@ public class OTBRDiscoverer implements ServiceListener {
             logger.info("Discovering Border Router at {}", MDNS_SERVICE_TYPE);
         } catch (IOException e) {
             logger.warn("Failed to create JmDNS {}", e.getMessage());
+        }
+    }
+
+    public void close(){
+        if(jmdns!=null){
+            try {
+                jmdns.close();
+            } catch (IOException e) {
+                logger.error("Failed to close JNS service: {}", e.getMessage());
+            }
         }
     }
 
