@@ -22,7 +22,7 @@ This implementation is based on the [Android Commissioner](https://github.com/op
 ## Pre-Built Libraries
 The following are the pre-built libraries for the Java Commissioner if one don't want to build it from scratch:
 
-- **[libotcommissioner.jar](pre-built/libotcommissioner.jar) ** – Cross-platform Java JNI wrapper
+- **[libotcommissioner.jar](pre-built/libotcommissioner.jar)** – Cross-platform Java JNI wrapper
 - **[libcommissioner-java-mac-amd_64.jnilib](pre-built/libcommissioner-java-mac-amd_64.jnilib)** – For macOS with Apple Silicon
 - **[libcommissioner-java-mac-x86_64.jnilib](pre-built/libcommissioner-java-mac-x86_64.jnilib)** – For macOS with Intel chips
 
