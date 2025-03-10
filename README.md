@@ -1,88 +1,152 @@
-# Thread Commissioner Implementation in Java
 
-This project refers android commissioner implementation from [OpenThread](https://github.com/openthread/ot-commissioner/tree/main/android). Replicate similar behaviour 
-in plain java application. It builds the native java library from [OpenThread Commissioner Repository](https://github.com/openthread/ot-commissioner) and uses it in Java Application.
+# OpenThread Commissioner Implementation in Java
 
-# Pre-Built Libraries
-Here are few pre-built libraries  
-1. [libotcommissioner.jar](pre-built/libotcommissioner.jar) - Cross Platform Java JNI Wrapper
-2. [libcommissioner-java-mac-amd_64.jnilib](pre-built/libcommissioner-java-mac-amd_64.jnilib) - For Mac OS with Apple Chips.   
-2. [libcommissioner-java-mac-x86_64.jnilib](pre-built/libcommissioner-java-mac-x86_64.jnilib) - For Mac OS with Intel Chips
+This project provides a reference implementation of an external OpenThread Commissioner in Java. [OpenThread’s open-source project](https://github.com/openthread/ot-commissioner) 
+currently offers a native [Commissioner CLI](https://openthread.io/guides/commissioner/build.md) and an 
+[Android app](https://github.com/openthread/ot-commissioner/tree/main/android) for external commissioning, 
+but no standalone Java-based implementation.
 
-Rename the respective library to `libcommissioner-java.jnilib` and place it in the same directory as your java application. Embed `libotcommissioner.jar` in your application jar. 
+This project aims to bridge that gap by providing a step-by-step guide for developers to build an external Commissioner 
+in Java. We encourage community contributions to refine and enhance this implementation, with the goal of submitting 
+a PR to the [official OpenThread repository](https://github.com/openthread/ot-commissioner). See [this guide](contributing.md) on how to contribute.
 
-## Build Native Commissioner
-Follow the below steps to build Native Commissioner
+---
 
-- Make sure we set JAVA_HOME Environment Variable so that it can find JNI.
+## Overview
 
-    ```bash 
-    ➜  $ echo export "JAVA_HOME=\$(/usr/libexec/java_home)" >> ~/.zshrc
-    ➜  $ echo $JAVA_HOME
-    /Users/ksingh/Library/Java/JavaVirtualMachines/openjdk-23.0.1/Contents/Home  
-    ➜  $  
-    ```
+This implementation is based on the [Android Commissioner](https://github.com/openthread/ot-commissioner/tree/main/android) from OpenThread but replicates its behavior in a plain Java application. It builds a native Java library from the OpenThread Commissioner repository and integrates it into a Java application.
 
-- Run [build-libs.sh](build-libs.sh) 
+![Java Commissioner](external-commissioning-java.jpg)
+---
 
-  ```bash 
-    ➜  $ ./build-libs.sh
-  ```
-This should generate following jars under [libs](libs)
-- `libotcommissioner.jar`
-- `libcommissioner-java.jnilib` or `libcommissioner-java.so` depending on the platform. 
+## Pre-Built Libraries
+The following are the pre-built libraries for the Java Commissioner if one don't want to build it from scratch:
 
-## Build Java Commissioner
+- **[libotcommissioner.jar](pre-built/libotcommissioner.jar) ** – Cross-platform Java JNI wrapper
+- **[libcommissioner-java-mac-amd_64.jnilib](pre-built/libcommissioner-java-mac-amd_64.jnilib)** – For macOS with Apple Silicon
+- **[libcommissioner-java-mac-x86_64.jnilib](pre-built/libcommissioner-java-mac-x86_64.jnilib)** – For macOS with Intel chips
 
-- Build Project and run it.
-```bash
-➜ openthread-commissioner-java $ mvn clean package
+Rename the respective library to `libcommissioner-java.jnilib` and place it in the same directory as your java application. Embed `libotcommissioner.jar` in your application jar.
+
+---
+
+## Building the Native Commissioner
+It is recommended to build your native Commissioner libraries to ensure compatibility with your platform. Follow the steps below to build the native Commissioner: 
+### Prerequisites
+Ensure that the `JAVA_HOME` environment variable is set correctly to allow JNI to locate Java.
+```sh
+echo export "JAVA_HOME=\$(/usr/libexec/java_home)" >> ~/.zshrc
+source ~/.zshrc
+echo $JAVA_HOME
 ```
-It will package dependent jars in the generated jar and place native libs next to it`openthread-commissioner-java-1.0-SNAPSHOT-jar-with-dependencies.jar`
 
-## Run the Java Commissioner
+Example output:
+```
+/Users/ksingh/Library/Java/JavaVirtualMachines/openjdk-23.0.1/Contents/Home
+```
+### Build Process
 
-```bash
-➜  openthread-commissioner-java $ cd target  
-➜  target $  java -jar openthread-commissioner-java-1.0-SNAPSHOT-jar-with-dependencies.jar 
+Run the provided script to build the native Commissioner libraries:
 
-2025-03-09 21:35:08 INFO  c.thread.commissioner.OTBRDiscoverer - Discovering Border Router at _meshcop._udp.local.
-2025-03-09 21:35:08 INFO  com.thread.commissioner.Runner - Discovering Border Router...1
-2025-03-09 21:35:09 INFO  com.thread.commissioner.Runner - Discovering Border Router...2
-2025-03-09 21:35:10 INFO  com.thread.commissioner.Runner - Discovering Border Router...3
-2025-03-09 21:35:10 INFO  c.thread.commissioner.OTBRDiscoverer - Service resolved: 172.20.10.9:49154 OpenThreadDemo 1111111122222222
->>> Enter PSKc (enter blank if want to compute):445f2b5ca6f2a93a55ce570a70efeecb
+```sh
+./build-libs.sh
+```
+
+This will generate the following libraries under the `libs/` directory:
+
+- `libotcommissioner.jar`
+- `libcommissioner-java.jnilib` (or `libcommissioner-java.so` depending on the platform)
+
+---
+
+## Building and Running the Java Commissioner
+
+### Build
+
+Compile and package the Java Commissioner using Maven:
+
+```sh
+mvn clean package
+```
+
+This will create a JAR file with dependencies:
+
+```
+target/openthread-commissioner-java-1.0-SNAPSHOT-jar-with-dependencies.jar
+```
+
+### Run
+
+Navigate to the `target/` directory and execute the Commissioner:
+
+```sh
+cd target  
+java -jar openthread-commissioner-java-1.0-SNAPSHOT-jar-with-dependencies.jar  
+```
+
+Expected output:
+
+```
+INFO  c.thread.commissioner.OTBRDiscoverer - Discovering Border Router at _meshcop._udp.local.
+INFO  com.thread.commissioner.Runner - Discovering Border Router...1
+INFO  com.thread.commissioner.Runner - Discovering Border Router...2
+INFO  com.thread.commissioner.Runner - Discovering Border Router...3
+INFO  c.thread.commissioner.OTBRDiscoverer - Service resolved: 172.20.10.9:49154 OpenThreadDemo 1111111122222222
+>>> Enter PSKc (leave blank to compute): 445f2b5ca6f2a93a55ce570a70efeecb
 Commands:
 1. Check State
 2. Enable All Joiners
 3. Exit
-Enter command number: 2025-03-09 21:35:19 INFO  com.thread.commissioner.Runner - Commissioner connected successfully!
-1
-2025-03-09 21:35:23 INFO  com.thread.commissioner.Runner - State:kActive
-
+Enter command number: 1
+INFO  com.thread.commissioner.Runner - Commissioner connected successfully!
+INFO  com.thread.commissioner.Runner - State: kActive
 ```
 
-If Border router is not discovered, we can manually provide the IP and Port of the Border Router. If PSKc is not provided, 
-it will ask network name, ext-pan-id and passphrase to and generate pskc. 
+If the Border Router is not discovered automatically, you can manually specify its IP and port. If PSKc is not provided, the application will prompt for the network name, extended PAN ID, and passphrase to generate it.
 
-## Join from a Device
+---
 
-Try joining from thread end device. Build and flash this poc firmware.
-Any device can discover the network and join with "J01NME" key. On joining attempt
+## Enable Joiners to Join the Network
 
-We would see this in commissioner
-
-
-```bash
-Enter command number: 2025-03-09 22:10:41 INFO  c.t.commissioner.ThreadCommissioner - enableAllJoiners - steeringData=ffffffffffffffffffffffffffffffff A joiner (ID=af5570f5a1810b7a)
-2025-03-09 22:10:41 INFO  com.thread.commissioner.Runner - All Joiners are accepted at PSKD:J01NME
-2025-03-09 22:11:12 INFO  c.t.commissioner.ThreadCommissioner - A joiner (ID=ca666d7873988c66) is requesting commissioning
-2025-03-09 22:11:12 INFO  c.t.commissioner.ThreadCommissioner - A joiner (ID=ca666d7873988c66) is connected with OK
-2025-03-09 22:11:12 INFO  c.t.commissioner.ThreadCommissioner - A joiner (ID=ca666d7873988c66) is finalizing
+Add Joiner Rule by choosing the command 2, it will enable all joiner for a Pre-Shared Key for Device (PSKD):
 
 ```
+Commands:
+1. Check State
+2. Enable All Joiners
+3. Exit
+Enter command number: 2
+Enter PSKd For All Joiner:JO1NME
+INFO  c.t.commissioner.ThreadCommissioner - enableAllJoiners - steeringData=ffffffffffffffffffffffffffffffff A joiner (ID=af5570f5a1810b7a)
+2025-03-09 22:00:30 INFO  com.thread.commissioner.Runner - All Joiners are accepted at PSKD:JO1NME
+```
 
-This concludes implementing the commissioner in java   
+---
+## Joining from a Device
 
-**Note :- This is a proof of concept, and do not recommend directly using the same in production, refer this a proof of concept for Java implementation** 
+To test device joining, [build and flash a Thread end-device firmware](https://medium.com/iotpractices/connecting-thread-devices-to-internet-f80c870c014a) with commissioning support. The device should discover the network and attempt to join using the Pre-Shared Key for Device (PSKD).
 
+On a successful join attempt, the Commissioner logs will display:
+
+```
+INFO  c.t.commissioner.ThreadCommissioner - A joiner (ID=ca666d7873988c66) is requesting commissioning  
+INFO  c.t.commissioner.ThreadCommissioner - A joiner (ID=ca666d7873988c66) is connected with OK  
+INFO  c.t.commissioner.ThreadCommissioner - A joiner (ID=ca666d7873988c66) is finalizing  
+```
+---
+
+## Disclaimer
+
+This project is a **proof of concept** and is **not recommended for production use at this stage**. It serves as a reference implementation for Java-based external commissioning.
+
+---
+
+## Contribute
+
+We welcome contributions from the community to improve and expand this project. Our goal is to refine it to a level where it can be submitted as a PR to the official [OpenThread repository](https://github.com/openthread/ot-commissioner). Please refer to OpenThread’s [contribution guidelines](contributing.md) to get started.
+
+## References
+- [Connecting Thread devices to Internet](https://medium.com/iotpractices/connecting-thread-devices-to-internet-f80c870c014a)
+- [Understanding Commissioner and Joiner](https://medium.com/iotpractices/simplifying-thread-network-provisioning-with-joiner-and-commissioner-roles-60c624f0de85)
+- [Understanding External Commissioning - Commissioner CLI](https://medium.com/iotpractices/external-commissioning-in-thread-network-b06e7b8a64ab)
+- [Understanding External Commissioning - Android App](https://medium.com/iotpractices/building-and-using-openthread-commissioner-mobile-app-03bde78773ab)
