@@ -34,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -61,6 +62,14 @@ public class ThreadCommissioner extends CommissionerHandler {
                     throwIfFail(this.init(pskc));
                     throwIfFail(this.connect(otbrAddress, otbrPort));
                     connected = true;
+                });
+    }
+
+    public CompletableFuture<Void> disconnect() {
+        return CompletableFuture.runAsync(
+                () -> {
+                    nativeCommissioner.disconnect();
+                    connected = false;
                 });
     }
 
@@ -95,6 +104,13 @@ public class ThreadCommissioner extends CommissionerHandler {
     private Error connect(String borderAgentAddress, int borderAgentPort) {
         // Petition to be the active commissioner in the Thread Network.
         return nativeCommissioner.petition(new String[1], borderAgentAddress, borderAgentPort);
+    }
+
+    public void list(){
+        if(!joiners.isEmpty())
+            joiners.forEach((joinerId,pskd)-> {logger.info("[{} - {}]", joinerId, pskd);} );
+        else
+            logger.info("No joiner enabled");
     }
 
 
@@ -173,8 +189,13 @@ public class ThreadCommissioner extends CommissionerHandler {
             ByteArray vendorStackVersion,
             String provisioningUrl,
             ByteArray vendorData) {
-        logger.info("A joiner (ID={}) is finalizing", Utils.getHexString(joinerId));
-        //Allow all joiner.
+        String joinerIdStr = Utils.getHexString(joinerId);
+        logger.info("A joiner (ID={}) is finalizing", joinerIdStr);
+        if(joiners.get(joinerIdStr)==null){
+            //Add joiner with key.
+            joiners.put(joinerIdStr, joiners.get(Utils.getHexString(computeJoinerIdAll())));
+        }
+
         return true;
     }
 

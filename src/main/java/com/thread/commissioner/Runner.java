@@ -18,6 +18,95 @@ public class Runner {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         ThreadCommissioner commissioner = new ThreadCommissioner();
+        while (true) {
+            System.out.println("Commands:");
+            System.out.println("1. Connect Border Router");
+            System.out.println("2. Check State");
+            System.out.println("3. Enable All Joiners");
+            System.out.println("4. List Joiners");
+            System.out.println("5. Disconnect");
+            System.out.println("6. Exit");
+            System.out.println("Enter command number: ");
+            int command = 0;
+            try {
+                command = Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e){
+                logger.warn("Invalid Command");
+                continue;
+            }
+
+            switch (command) {
+                case 1:
+                    connnect(commissioner, scanner);
+                    break;
+                case 2:
+                    state(commissioner);
+                    break;
+                case 3:
+                    enableAllJoiners(commissioner, scanner);
+                    break;
+                case 4:
+                    commissioner.list();
+                    break;
+                case 5:
+                    stop(commissioner);
+                    break;
+                case 6:
+                    logger.warn("Exiting...");
+                    System.exit(0);
+                    break;
+                default:
+                    logger.warn("Invalid command.");
+            }
+        }
+    }
+
+    private static void enableAllJoiners(ThreadCommissioner commissioner,Scanner scanner) {
+        if (commissioner.isConnected()) {
+            try {
+                System.out.println("Enter PSKd For All Joiner:");
+                String pskd = scanner.nextLine();
+                if (!pskd.isEmpty()) {
+                    commissioner.enableAllJoiners(pskd)
+                            .thenRun(() -> {
+                                logger.info("All Joiners are accepted at PSKD:{}", pskd);
+                            })
+                            .exceptionally(
+                                    ex -> {
+                                        logger.error("Failed to add Joiner :{}", ex.getMessage());
+                                        return null;
+                                    });
+                } else {
+                    logger.warn("Invalid PSKd");
+                }
+            } catch (CompletionException e) {
+                logger.warn("Failed to Enable All Joiners:{}", e.getMessage());
+            }
+        } else {
+            logger.warn("Commissioner is not connected, reconnect or try again after sometime!");
+        }
+    }
+
+    private static void state(ThreadCommissioner commissioner) {
+        if (commissioner.isConnected()) {
+            try {
+                commissioner.getState().thenAccept((state) -> {
+                            logger.info("State:{}", state);
+                        })
+                        .exceptionally(
+                                ex -> {
+                                    logger.warn("Failed to get State : {}", String.valueOf(ex));
+                                    return null;
+                                });
+            } catch (CompletionException e) {
+                logger.warn("Failed to get get State: {}", e.getMessage());
+            }
+        } else {
+            logger.warn("Commissioner is not connected, reconnect or try again after sometime!");
+        }
+    }
+
+    private static void connnect(ThreadCommissioner commissioner, Scanner scanner) {
         if (!commissioner.isConnected()) {
             OTBRDiscoverer otbrDiscoverer = new OTBRDiscoverer();
             int counter = 0;
@@ -79,70 +168,22 @@ public class Runner {
             } catch (CompletionException e) {
                 logger.error("Failed to connect: {}", e.getMessage());
             }
+        } else {
+            logger.warn("Commissioner already connected!");
         }
+    }
 
-        while (true) {
-            System.out.println("Commands:");
-            System.out.println("1. Check State");
-            System.out.println("2. Enable All Joiners");
-            System.out.println("3. Exit");
-            System.out.println("Enter command number: ");
-            int command = 0;
+    private static void stop(ThreadCommissioner commissioner) {
+        if (commissioner.isConnected()) {
             try {
-                command = Integer.parseInt(scanner.nextLine());
-            } catch (NumberFormatException e){
-                logger.warn("Invalid Command");
-                continue;
+                commissioner.disconnect().thenRun(() -> {
+                    logger.info("Commissioner disconnected!");
+                });
+            } catch (CompletionException e) {
+                logger.warn("Failed to disconnect: {}", e.getMessage());
             }
-
-            if (!commissioner.isConnected()) {
-                logger.warn("Commissioner is not connected, try again!");
-                continue;
-            }
-
-            switch (command) {
-                case 1:
-                    try {
-                        commissioner.getState().thenAccept((state) -> {
-                                    logger.info("State:{}", state);
-                                })
-                                .exceptionally(
-                                        ex -> {
-                                            logger.info("Commissioner failed to connect{}", String.valueOf(ex));
-                                            return null;
-                                        });
-                    } catch (CompletionException e) {
-                        logger.warn("Failed to Enable All Joiners:" + e.getMessage());
-                    }
-                    break;
-                case 2:
-                    try {
-                        System.out.println("Enter PSKd For All Joiner:");
-                        String pskd = scanner.nextLine();
-                        if (!pskd.isEmpty()) {
-                            commissioner.enableAllJoiners(pskd)
-                                    .thenRun(() -> {
-                                        logger.info("All Joiners are accepted at PSKD:{}", pskd);
-                                    })
-                                    .exceptionally(
-                                            ex -> {
-                                                logger.error("Failed to add Joiner :{}", ex.getMessage());
-                                                return null;
-                                            });
-                        } else {
-                            logger.warn("Invalid PSKd");
-                        }
-                    } catch (CompletionException e) {
-                        logger.warn("Failed to Enable All Joiners:{}", e.getMessage());
-                    }
-                    break;
-                case 3:
-                    logger.warn("Exiting...");
-                    System.exit(0);
-                    break;
-                default:
-                    logger.warn("Invalid command.");
-            }
+        } else {
+            logger.warn("Commissioner is not connected!");
         }
     }
 }

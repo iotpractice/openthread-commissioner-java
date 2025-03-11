@@ -85,16 +85,17 @@ public class OTBRDiscoverer implements ServiceListener {
                 NetworkInterface netInterface = interfaces.nextElement();
 
                 // Ignore loopback and inactive interfaces
-                if (netInterface.isLoopback() || !netInterface.isUp()) {
+                if (netInterface.isLoopback() || !netInterface.isUp() || netInterface.getName().contains("utun")) {
                     continue;
                 }
 
                 Enumeration<InetAddress> addresses = netInterface.getInetAddresses();
+
                 while (addresses.hasMoreElements()) {
                     InetAddress address = addresses.nextElement();
                     // Ignore loopback and IPv6 addresses
                     if (!address.isLoopbackAddress() && address.getAddress().length == 4) {
-                        logger.debug("Local IP Address: {}", address.getHostAddress());
+                        logger.info("Local IP Address: {}", address.getHostAddress());
                         return address; // Stop after finding the first valid IP
                     }
                 }
@@ -104,6 +105,4 @@ public class OTBRDiscoverer implements ServiceListener {
         }
         return InetAddress.getLocalHost();
     }
-
-
 }

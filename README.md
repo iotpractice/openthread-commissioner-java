@@ -85,19 +85,23 @@ java -Djava.library.path=. -jar openthread-commissioner-java-1.0-SNAPSHOT-jar-wi
 Expected output:
 
 ```
-INFO  c.thread.commissioner.OTBRDiscoverer - Discovering Border Router at _meshcop._udp.local.
-INFO  com.thread.commissioner.Runner - Discovering Border Router...1
-INFO  com.thread.commissioner.Runner - Discovering Border Router...2
-INFO  com.thread.commissioner.Runner - Discovering Border Router...3
-INFO  c.thread.commissioner.OTBRDiscoverer - Service resolved: 172.20.10.9:49154 OpenThreadDemo 1111111122222222
->>> Enter PSKc (leave blank to compute): 445f2b5ca6f2a93a55ce570a70efeecb
 Commands:
-1. Check State
-2. Enable All Joiners
-3. Exit
-Enter command number: 1
-INFO  com.thread.commissioner.Runner - Commissioner connected successfully!
-INFO  com.thread.commissioner.Runner - State: kActive
+1. Connect Border Router
+2. Check State
+3. Enable All Joiners
+4. List Joiners
+5. Disconnect
+6. Exit
+Enter command number: 
+1
+2025-03-11 16:54:06 INFO  c.thread.commissioner.OTBRDiscoverer - Local IP Address: 10.133.130.53
+2025-03-11 16:54:06 INFO  c.thread.commissioner.OTBRDiscoverer - Discovering Border Router at _meshcop._udp.local.
+2025-03-11 16:54:06 INFO  com.thread.commissioner.Runner - Discovering Border Router...1
+2025-03-11 16:54:07 INFO  c.thread.commissioner.OTBRDiscoverer - Service resolved: 10.133.130.51:49154 OpenThreadDemo 1111111122222222
+>>> Enter PSKc (enter blank if want to compute):
+25f64483a585dbb9d90b5a6f1acf8d72
+
+2025-03-11 16:57:51 INFO  com.thread.commissioner.Runner - Commissioner connected successfully!
 ```
 
 If the Border Router is not discovered automatically, you can manually specify its IP and port. If PSKc is not provided, the application will prompt for the network name, extended PAN ID, and passphrase to generate it.
@@ -106,14 +110,29 @@ If the Border Router is not discovered automatically, you can manually specify i
 
 ## Enable Joiners to Join the Network
 
-Add Joiner Rule by choosing the command 2, it will enable all joiner for a Pre-Shared Key for Device (PSKD):
+Check connection state and Add Joiner Rule by choosing the command 2, it will enable all joiner for a Pre-Shared Key for Device (PSKD):
 
 ```
 Commands:
-1. Check State
-2. Enable All Joiners
-3. Exit
-Enter command number: 2
+1. Connect Border Router
+2. Check State
+3. Enable All Joiners
+4. List Joiners
+5. Disconnect
+6. Exit
+Enter command number: 
+2
+2025-03-11 17:05:37 INFO  com.thread.commissioner.Runner - State:kActive
+
+Commands:
+1. Connect Border Router
+2. Check State
+3. Enable All Joiners
+4. List Joiners
+5. Disconnect
+6. Exit
+Enter command number: 
+3
 Enter PSKd For All Joiner:JO1NME
 INFO  c.t.commissioner.ThreadCommissioner - enableAllJoiners - steeringData=ffffffffffffffffffffffffffffffff A joiner (ID=af5570f5a1810b7a)
 2025-03-09 22:00:30 INFO  com.thread.commissioner.Runner - All Joiners are accepted at PSKD:JO1NME
@@ -131,6 +150,28 @@ INFO  c.t.commissioner.ThreadCommissioner - A joiner (ID=ca666d7873988c66) is re
 INFO  c.t.commissioner.ThreadCommissioner - A joiner (ID=ca666d7873988c66) is connected with OK  
 INFO  c.t.commissioner.ThreadCommissioner - A joiner (ID=ca666d7873988c66) is finalizing  
 ```
+---
+
+---
+## List Commissioned Joiners
+
+
+```
+Commands:
+1. Connect Border Router
+2. Check State
+3. Enable All Joiners
+4. List Joiners
+5. Disconnect
+6. Exit
+Enter command number: 
+4
+2025-03-11 17:03:46 INFO  c.t.commissioner.ThreadCommissioner - [af5570f5a1810b7a - J01NME]
+2025-03-11 17:03:46 INFO  c.t.commissioner.ThreadCommissioner - [ca666d7873988c66 - J01NME]  
+```
+
+> Note : Joiner id is a sha256 of eui64. and `af5570f5a1810b7a` is ssh256 of `0x00` (this entry allow all joiners).  
+
 ---
 
 ## Disclaimer
