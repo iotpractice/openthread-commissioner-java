@@ -26,6 +26,7 @@ The following are the pre-built libraries for the Java Commissioner if one don't
 - **[libcommissioner-java-mac-amd_64.jnilib](pre-built/libcommissioner-java-mac-amd_64.jnilib)** – For macOS with Apple Silicon
 - **[libcommissioner-java-mac-x86_64.jnilib](pre-built/libcommissioner-java-mac-x86_64.jnilib)** – For macOS with Intel chips
 - **[libcommissioner-java-ubuntu-x86_64.so](pre-built/libcommissioner-java-ubuntu-x86_64.so)** – For Ubuntu Linux x86_64
+- **[libcommissioner-java-rpi-aarch64.so](pre-built/libcommissioner-java-rpi-aarch64.so)**  ^`^s For Raspberry Pi ARM 64
 - **[openthread-commissioner-java-1.0-SNAPSHOT-jar-with-dependencies.jar](pre-built/openthread-commissioner-java-1.0-SNAPSHOT-jar-with-dependencies.jar)** - This project's delivery jar with cross-platform dependencies
 
 Rename the respective library to `libcommissioner-java.jnilib or libcommissioner-java.so` and place it in the same directory as your java application. Embed `libotcommissioner.jar` in your application jar, above jar `openthread-commissioner-java-1.0-SNAPSHOT-jar-with-dependencies.jar` already package it..
@@ -64,6 +65,7 @@ This will generate the following libraries under the `libs/` directory:
 Compile and package the Java Commissioner using Maven:
 
 ```sh
+mvn initialize 
 mvn clean package
 ```
 
